@@ -45,6 +45,30 @@ module control_unit(
             jump      = 1'b0; //Don't jump
          end
 
+         ADDI:begin
+            reg_dst   = 1'b0; //The result has to be saved in Rt and not Rd (see MIPS)
+            alu_src   = 1'b1; //The second input of the ALU has to come from the Immediate Generator
+            mem_2_reg = 1'b0; //The result must go to the register bank, not the memory
+            reg_write = 1'b1; //The result has to be written in the register bank
+            mem_read  = 1'b0; //Nothing must be read from mem
+            mem_write = 1'b0; //Nothing must be written to mem
+            branch    = 1'b0; //No branch must be taken
+            alu_op    = ADD_OPCODE; // addition with constant
+            jump      = 1'b0; // Don't jump
+         end
+
+         BRANCH_EQ:begin
+            reg_dst   = 1'b0; //select Rt (see MIPS)
+            alu_src   = 1'b0; //select whether the input of the ALU comes from the registers or directly from the instruction
+            mem_2_reg = 1'b0; //selects wether the data written in the registers comes from memory or bypasses it
+            reg_write = 1'b0; //write in the register
+            mem_read  = 1'b0; //controls/indicates that information is written in the memory
+            mem_write = 1'b0; //controls/indicates that information is written in the memory
+            branch    = 1'b1; //indicates whether a branch should be taken or not
+            alu_op    = 2'd0; //No effect here
+            jump      = 1'b0; //Don't jump 
+         end
+
          JUMP:begin
             reg_dst   = 1'b0; //No effect here
             alu_src   = 1'b0; //No effect here
@@ -80,6 +104,8 @@ module control_unit(
             alu_op    = ADD_OPCODE; //Add values: MemAdress = R[rs] + Immediate
             jump      = 1'b0; //Don't jump
          end
+    
+	// Declare the control signals for each one of the instructions
 	
          default:begin
             reg_dst   = 1'b0; 
