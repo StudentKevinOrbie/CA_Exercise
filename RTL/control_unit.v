@@ -34,18 +34,52 @@ module control_unit(
 
       case(opcode)
          ALU_R:begin
-            reg_dst   = 1'b1;
-            alu_src   = 1'b0;
-            mem_2_reg = 1'b0;
-            reg_write = 1'b1;
-            mem_read  = 1'b0;
-            mem_write = 1'b0;
-            branch    = 1'b0;
-            alu_op    = R_TYPE_OPCODE;
-            jump      = 1'b0;
+            reg_dst   = 1'b1; //Select the write adress from bits [11 - 15] (R-type instr)
+            alu_src   = 1'b0; //Select 2nd variable for in ALU from Reg File
+            mem_2_reg = 1'b0; //Write directly from alu to Reg File
+            reg_write = 1'b1; //Write to the register
+            mem_read  = 1'b0; //Don't Read Mem from Data memory
+            mem_write = 1'b0; //Don't Write to Data memory
+            branch    = 1'b0; //Don't branch
+            alu_op    = R_TYPE_OPCODE; //Select type of operation ALU
+            jump      = 1'b0; //Don't jump
          end
-    
-	// Declare the control signals for each one of the instructions
+
+         JUMP:begin
+            reg_dst   = 1'b0; //No effect here
+            alu_src   = 1'b0; //No effect here
+            mem_2_reg = 1'b0; //No effect here
+            reg_write = 1'b0; //Don't Write to the Register File
+            mem_read  = 1'b0; //Don't Read from Data memory
+            mem_write = 1'b0; //Don't Write to Data memory
+            branch    = 1'b0; //No effect here
+            alu_op    = 2'd0; //No effect here
+            jump      = 1'b1; //Indicate if you need to jump
+         end
+
+         LOAD_WORD:begin
+            reg_dst   = 1'b0; //Select the Reg-adress to write to from bits [20 - 16] (I-type instr)
+            alu_src   = 1'b1; //Select the immediate value from the instruction for the 2nd input of the ALU
+            mem_2_reg = 1'b1; //Write data from memory to Reg file
+            reg_write = 1'b1; //Write to the register
+            mem_read  = 1'b1; //Read value from Data memory
+            mem_write = 1'b0; //Don't Write to Data memory
+            branch    = 1'b0; //Don't branch
+            alu_op    = ADD_OPCODE; //Add values: MemAdress = R[rs] + Immediate
+            jump      = 1'b0; //Don't jump
+         end
+
+         STORE_WORD:begin
+            reg_dst   = 1'b0; //No effect here
+            alu_src   = 1'b1; //Select the immediate value from the instruction for the 2nd input of the ALU
+            mem_2_reg = 1'b0; //No effect here
+            reg_write = 1'b0; //Don't write to Reg file
+            mem_read  = 1'b0; //Don't Read value from Data memory
+            mem_write = 1'b1; //Write to Data memory
+            branch    = 1'b0; //Don't branch
+            alu_op    = ADD_OPCODE; //Add values: MemAdress = R[rs] + Immediate
+            jump      = 1'b0; //Don't jump
+         end
 	
          default:begin
             reg_dst   = 1'b0; 
