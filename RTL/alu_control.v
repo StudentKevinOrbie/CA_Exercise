@@ -52,7 +52,7 @@ module alu_control(
 		   FUNC_SLT	:  rtype_op = SLT_OP;
 		   FUNC_SLL	:  rtype_op = SLL_OP;
 		   FUNC_SRL	:  rtype_op = SRL_OP;
-         FUNC_MUL :  rtype_op = MULT_OP;
+         FUNC_MULT :  rtype_op = MULT_OP;
 			default:    rtype_op = 4'd0;
 		endcase
 	end
