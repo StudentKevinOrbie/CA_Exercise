@@ -32,12 +32,14 @@ module alu #(
    parameter [3:0] SLL_OP = 4'd3;
    parameter [3:0] SRL_OP = 4'd4;
    parameter [3:0] SUB_OP = 4'd5;
+   parameter [3:0] MULT_OP = 4'd6;
    parameter [3:0] SLT_OP = 4'd7;
    parameter [3:0] NOR_OP = 4'd12;
 
 
+
    //REG AND WIRE DECLARATION
-   reg signed [DATA_W-1:0] sub_out,add_out,and_out,or_out,
+   reg signed [DATA_W-1:0] mult_out,sub_out,add_out,and_out,or_out,
                            nor_out,slt_out, sll_out, srl_out;
 	reg 		               overflow_add,overflow_sub,
                            msb_equal_flag;
@@ -67,6 +69,7 @@ module alu #(
       sub_out  =   alu_in_0 - alu_in_1;
       and_out  =   alu_in_0 & alu_in_1;
       or_out   =   alu_in_0 | alu_in_1;
+      mult_out =   alu_in_0*alu_in_1;
       nor_out  = ~(alu_in_0 | alu_in_1);
       slt_out  =  (alu_in_0 < alu_in_1) ? 1:0;        //Zero extend the 1 bit slt flag to a DATA_W bit value     
    end
@@ -83,6 +86,7 @@ module alu #(
 			SUB_OP:  alu_out = sub_out;
 			SLT_OP:  alu_out = slt_out;
 			SLL_OP:  alu_out = sll_out;
+         MULT_OP : alu_out = mult_out;
 			SRL_OP:  alu_out = srl_out;
 			default: alu_out =     'd0;
 		endcase
