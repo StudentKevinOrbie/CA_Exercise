@@ -15,7 +15,7 @@ module control_unit(
    );
 
    //The opcode for these instructions can be found on the MIPS reference at the beginning of the textbook (Green cardboard page)
-   parameter integer ALU_R      = 6'h0;
+   parameter integer ALU_R      = 6'h0; // The MULT instruction of this type (No change needed)
    parameter integer ADDI       = 6'h8;
    parameter integer BRANCH_EQ  = 6'h4;
    parameter integer JUMP       = 6'h2;
@@ -25,7 +25,6 @@ module control_unit(
    parameter [1:0] ADD_OPCODE     = 2'd0;
    parameter [1:0] SUB_OPCODE     = 2'd1;
    parameter [1:0] R_TYPE_OPCODE  = 2'd2;
-  
 
 
    //The behavior of the control unit can be found in Chapter 4, Figure 4.18
