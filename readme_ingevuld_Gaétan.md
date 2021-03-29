@@ -92,24 +92,24 @@ For a processor with 5 pipelined stages (Instruction Fetch (IF), Instruction Dec
 |         |              |                      |                |                |
 control signals:
 IF_control:
-	jump	 (EX/MEM) --> could be done without
+	MEM_jump	      (EX/MEM) --> could be done without
+	MEM_branch        (EX/MEM)
+	zero_flag_EXE_MEM (EX/MEM)
 	
 ID_control:
-	RegWrite (MEM/WB)
-	RegDst
+	WB_reg_write (MEM/WB)
 
 EXE_control:
-	ALUSrc (ID/EX)
-	ALUOp  (ID/EX)
-	RegDst (ID/EX)
+	EXE_alu_src (ID/EX)
+	EXE_alu_op  (ID/EX)
+	EXE_reg_dst (ID/EX)
 	
 MEM_control:
-	MemWirte (EX/MEM)
-	MemRead  (EX/MEM)
-	branch   (EX/MEM)
+	MEM_mem_write (EX/MEM)
+	MEM_mem_read  (EX/MEM)
 	
 WB_control:
-	MemtoReg (MEM/WB)
+	WB_mem_2_reg (MEM/WB)
 
 Insert the pipelined registers where necessary, using the module `reg_arstn_en`. 
 

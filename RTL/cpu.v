@@ -52,7 +52,10 @@ wire signed [31:0] immediate_extended;
 
 assign immediate_extended = $signed(instruction[15:0]);
 
-// ---------------------------------------------- IF ----------------------------------------------
+// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------- IF -----------------------------------------------
+// -------------------------------------------------------------------------------------------------
+
 pc #(
    .DATA_W(32)
 ) program_counter (
@@ -60,9 +63,9 @@ pc #(
    .arst_n    (arst_n    ),
    .branch_pc (branch_pc ),
    .jump_pc   (jump_pc   ),
-   .zero_flag (zero_flag ),
-   .branch    (branch    ),
-   .jump      (jump      ),
+   .zero_flag (zero_flag_EXE_MEM ),
+   .branch    (MEM_branch    ),
+   .jump      (MEM_jump      ),
    .current_pc(current_pc),
    .enable    (enable    ),
    .updated_pc(updated_pc)
@@ -106,8 +109,9 @@ reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_IF_ID(
       .dout  (updated_pc_IF_ID)
 );
 
-
-// ---------------------------------------------- ID ----------------------------------------------
+// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------- ID -----------------------------------------------
+// -------------------------------------------------------------------------------------------------
 control_unit control_unit(
    .opcode   (instruction_IF_ID[31:26]),
    .reg_dst  (reg_dst           ),
@@ -122,62 +126,21 @@ control_unit control_unit(
 );
 
 
-
 register_file #(
    .DATA_W(32)
 ) register_file(
    .clk      (clk               ),
    .arst_n   (arst_n            ),
-<<<<<<< HEAD
    .reg_write(WB_reg_write      ),
-   .raddr_1  (instruction[25:21]),
-   .raddr_2  (instruction[20:16]),
-=======
-   .reg_write(reg_write         ),
    .raddr_1  (instruction_IF_ID[25:21]),
    .raddr_2  (instruction_IF_ID[20:16]),
->>>>>>> f3d7c8d6e47dd530ae17faf323eb3778da4cf9e8
-   .waddr    (regfile_waddr     ),
+   .waddr    (regfile_waddr_MEM_WB    ),
    .wdata    (regfile_wdata     ),
    .rdata_1  (regfile_data_1    ),
    .rdata_2  (regfile_data_2    )
 );
 
-<<<<<<< HEAD
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Control ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-wire [1:0] WB_ctrl;
-wire [2:0] MEM_ctrl;
-wire [3:0] EXE_ctrl;
-
-always@(*) WB_ctrl = {mem_2_reg, reg_write};
-reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
-      .clk   (clk       ),
-      .arst_n(arst_n    ),
-      .din   (WB_ctrl   ),
-      .en    (enable    ),
-      .dout  (WB_ctrl_ID_EXE)
-);
-
-always@(*) MEM_ctrl = {alu_src, alu_op, reg_dst};
-reg_arstn_en #(.DATA_W(3)) MEM_ctrl_pipe_ID_EXE(
-      .clk   (clk       ),
-      .arst_n(arst_n    ),
-      .din   (MEM_ctrl   ),
-      .en    (enable    ),
-      .dout  (MEM_ctrl_ID_EXE)
-);
-
-always@(*) EXE_ctrl = {mem_write, mem_read, branch, jump};
-reg_arstn_en #(.DATA_W(4)) EXE_ctrl_pipe_ID_EXE(
-      .clk   (clk       ),
-      .arst_n(arst_n    ),
-      .din   (EXE_ctrl   ),
-      .en    (enable    ),
-      .dout  (EXE_ctrl_ID_EXE)
-);
-
-=======
-//---------------------------------------------- pipe regs ID - EXE ----------------------------------------------
+// =================================== pipe regs ID - EXE ===================================
 wire [31:0] regfile_data_1_ID_EXE
 reg_arstn_en #(.DATA_W(32)) regfile_data_1_pipe_ID_EXE(
       .clk   (clk       ),
@@ -186,6 +149,7 @@ reg_arstn_en #(.DATA_W(32)) regfile_data_1_pipe_ID_EXE(
       .en    (enable    ),
       .dout  (regfile_data_1_ID_EXE)
 );
+
 wire [31:0] regfile_data_2_ID_EXE
 reg_arstn_en #(.DATA_W(32)) regfile_data_2_pipe_ID_EXE(
       .clk   (clk       ),
@@ -194,6 +158,8 @@ reg_arstn_en #(.DATA_W(32)) regfile_data_2_pipe_ID_EXE(
       .en    (enable    ),
       .dout  (regfile_data_2_ID_EXE)
 );
+
+// Through
 wire [31:0] updated_pc_ID_EXE
 reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_ID_EXE(
       .clk   (clk       ),
@@ -202,6 +168,7 @@ reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_ID_EXE(
       .en    (enable    ),
       .dout  (updated_pc_ID_EXE)
 );
+
 wire [31:0] immediate_extended_ID_EXE
 reg_arstn_en #(.DATA_W(32)) immediate_extended_pipe_ID_EXE(
       .clk   (clk       ),
@@ -220,12 +187,52 @@ reg_arstn_en #(.DATA_W(32)) instruction_pipe_ID_EXE(
       .dout  (instruction_ID_EXE)
 );
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Control ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+wire [1:0] WB_ctrl;
+wire [3:0] MEM_ctrl;
+wire [2:0] EXE_ctrl;
 
->>>>>>> f3d7c8d6e47dd530ae17faf323eb3778da4cf9e8
+wire [1:0] WB_ctrl_ID_EXE;
+always@(*) WB_ctrl = {mem_2_reg, reg_write};
+reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (WB_ctrl   ),
+      .en    (enable    ),
+      .dout  (WB_ctrl_ID_EXE)
+);
+
+wire [2:0] EXE_ctrl_ID_EXE;
+always@(*) EXE_ctrl = {alu_src, alu_op, reg_dst};
+reg_arstn_en #(.DATA_W(3)) EXE_ctrl_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (EXE_ctrl   ),
+      .en    (enable    ),
+      .dout  (EXE_ctrl_ID_EXE)
+);
+
+wire [3:0] MEM_ctrl_ID_EXE;
+always@(*) MEM_ctrl = {mem_write, mem_read, branch, jump};
+reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (MEM_ctrl   ),
+      .en    (enable    ),
+      .dout  (MEM_ctrl_ID_EXE)
+);
+
+// -------------------------------------------------------------------------------------------------
 // ---------------------------------------------- EXE ----------------------------------------------
+// -------------------------------------------------------------------------------------------------
+wire EXE_alu_src;
+wire EXE_alu_op;
+wire EXE_reg_dst;
+always@(*) {EXE_alu_src, EXE_alu_op, EXE_reg_dst} = EXE_ctrl_ID_EXE;
+
 alu_control alu_ctrl(
    .function_field (instruction_ID_EXE[5:0]),
-   .alu_op         (alu_op          ),
+   .alu_op         (EXE_alu_op      ),
    .alu_control    (alu_control     )
 );
 
@@ -233,9 +240,9 @@ mux_2 #(
    .DATA_W(32)
 ) alu_operand_mux (
    .input_a (immediate_extended_ID_EXE),
-   .input_b (regfile_data_2_ID_EXE),
-   .select_a(alu_src           ),
-   .mux_out (alu_operand_2     )
+   .input_b (regfile_data_2_ID_EXE    ),
+   .select_a(EXE_alu_src              ),
+   .mux_out (alu_operand_2            )
 );
 
 mux_2 #(
@@ -243,7 +250,7 @@ mux_2 #(
 ) regfile_dest_mux (
    .input_a (instruction_ID_EXE[15:11]),
    .input_b (instruction_ID_EXE[20:16]),
-   .select_a(reg_dst          ),
+   .select_a(EXE_reg_dst       ),
    .mux_out (regfile_waddr     )
 );
 
@@ -271,7 +278,8 @@ branch_unit#(
    .jump_pc      (jump_pc         )
 );
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Registers ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// =================================== pipe regs EXE - MEM ===================================
+wire [31:0] alu_out_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) alu_out_pipe_EXE_MEM(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -280,6 +288,8 @@ reg_arstn_en #(.DATA_W(32)) alu_out_pipe_EXE_MEM(
       .dout  (alu_out_EXE_MEM)
 );
 
+// Through
+wire [31:0] regfile_data_2_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) regfile_data_2_pipe_EXE_MEM(
       .clk   (clk                  ),
       .arst_n(arst_n               ),
@@ -288,6 +298,7 @@ reg_arstn_en #(.DATA_W(32)) regfile_data_2_pipe_EXE_MEM(
       .dout  (regfile_data_2_EXE_MEM)
 );
 
+wire [31:0] branch_pc_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) branch_pc_pipe_EXE_MEM(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -296,6 +307,7 @@ reg_arstn_en #(.DATA_W(32)) branch_pc_pipe_EXE_MEM(
       .dout  (branch_pc_EXE_MEM)
 );
 
+wire [31:0] regfile_waddr_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_EXE_MEM(
       .clk   (clk          ),
       .arst_n(arst_n       ),
@@ -304,6 +316,7 @@ reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_EXE_MEM(
       .dout  (regfile_waddr_EXE_MEM)
 );
 
+wire [31:0] jump_pc_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) jump_pc_pipe_EXE_MEM(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -313,6 +326,8 @@ reg_arstn_en #(.DATA_W(32)) jump_pc_pipe_EXE_MEM(
 );
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Control ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Through
+wire [1:0] WB_ctrl_EXE_MEM;
 reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_EXE_MEM(
       .clk   (clk           ),
       .arst_n(arst_n        ),
@@ -321,6 +336,17 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_EXE_MEM(
       .dout  (WB_ctrl_EXE_MEM)
 );
 
+// Through
+wire [3:0] MEM_ctrl_EXE_MEM;
+reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_EXE_MEM(
+      .clk   (clk           ),
+      .arst_n(arst_n        ),
+      .din   (MEM_ctrl_ID_EXE),
+      .en    (enable        ),
+      .dout  (MEM_ctrl_EXE_MEM)
+);
+
+wire zero_flag_EXE_MEM;
 reg_arstn_en #(.DATA_W(1)) zero_flag_pipe_EXE_MEM(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -329,24 +355,34 @@ reg_arstn_en #(.DATA_W(1)) zero_flag_pipe_EXE_MEM(
       .dout  (zero_flag_EXE_MEM)
 );
 
+// -------------------------------------------------------------------------------------------------
 // ---------------------------------------------- MEM ----------------------------------------------
+// -------------------------------------------------------------------------------------------------
+wire MEM_mem_write;
+wire MEM_mem_read;
+wire MEM_branch;
+wire MEM_jump;
+always@(*) {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
+
 sram #(
    .ADDR_W(10),
    .DATA_W(32)
 ) data_memory(
-   .clk      (clk           ),
+   .clk      (clk            ),
    .addr     (alu_out_EXE_MEM),
-   .wen      (mem_write     ),
-   .ren      (mem_read      ),
-   .wdata    (regfile_data_2),
-   .rdata    (dram_data     ),   
-   .addr_ext (addr_ext_2    ),
-   .wen_ext  (wen_ext_2     ),
-   .ren_ext  (ren_ext_2     ),
-   .wdata_ext(wdata_ext_2   ),
-   .rdata_ext(rdata_ext_2   )
+   .wen      (MEM_mem_write  ),
+   .ren      (MEM_mem_read   ),
+   .wdata    (regfile_data_2_EXE_MEM),
+   .rdata    (dram_data      ),   
+   .addr_ext (addr_ext_2     ),
+   .wen_ext  (wen_ext_2      ),
+   .ren_ext  (ren_ext_2      ),
+   .wdata_ext(wdata_ext_2    ),
+   .rdata_ext(rdata_ext_2    )
 );
 
+// =================================== pipe regs MEM - WB ===================================
+wire [31:0] dram_data_MEM_WB;
 reg_arstn_en #(.DATA_W(32)) dram_data_pipe_MEM_WB(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -355,6 +391,8 @@ reg_arstn_en #(.DATA_W(32)) dram_data_pipe_MEM_WB(
       .dout  (dram_data_MEM_WB)
 );
 
+// Through
+wire [31:0] alu_out_MEM_WB;
 reg_arstn_en #(.DATA_W(32)) alu_out_pipe_MEM_WB(
       .clk   (clk            ),
       .arst_n(arst_n         ),
@@ -363,6 +401,8 @@ reg_arstn_en #(.DATA_W(32)) alu_out_pipe_MEM_WB(
       .dout  (alu_out_MEM_WB)
 );
 
+// Through
+wire [31:0] regfile_waddr_MEM_WB;
 reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_MEM_WB(
       .clk   (clk            ),
       .arst_n(arst_n         ),
@@ -372,6 +412,8 @@ reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_MEM_WB(
 );
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Control ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Through
+wire [1:0] WB_ctrl_MEM_WB;
 reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_MEM_WB(
       .clk   (clk            ),
       .arst_n(arst_n         ),
@@ -380,7 +422,9 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_MEM_WB(
       .dout  (WB_ctrl_MEM_WB)
 );
 
-// ---------------------------------------------- WB ----------------------------------------------
+// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------- WB -----------------------------------------------
+// -------------------------------------------------------------------------------------------------
 wire WB_mem_2_reg;
 wire WB_reg_write;
 always@(*) {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
@@ -388,13 +432,11 @@ always@(*) {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
 mux_2 #(
    .DATA_W(32)
 ) regfile_data_mux (
-   .input_a  (dram_data    ),
-   .input_b  (alu_out      ),
-   .select_a (WB_mem_2_reg     ),
+   .input_a  (dram_data_MEM_WB    ),
+   .input_b  (alu_out_MEM_WB      ),
+   .select_a (WB_mem_2_reg        ),
    .mux_out  (regfile_wdata)
 );
-
-
 
 endmodule
 
