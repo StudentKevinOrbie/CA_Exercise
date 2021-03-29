@@ -88,6 +88,7 @@ sram #(
 
 // RegName = [signal_name]_pipe_[prevStage]_[followingStage]
 // OutName = [signal_name]_[followingStage]_[nextStage]
+wire [31:0] instruction_IF_ID
 reg_arstn_en #(.DATA_W(32)) instruction_pipe_IF_ID(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -96,6 +97,7 @@ reg_arstn_en #(.DATA_W(32)) instruction_pipe_IF_ID(
       .dout  (instruction_IF_ID)
 );
 
+wire [31:0] updated_pc_IF_ID
 reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_IF_ID(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -136,7 +138,7 @@ register_file #(
 );
 
 //---------------------------------------------- pipe regs ID - EXE ----------------------------------------------
-
+wire [31:0] regfile_data_1_ID_EXE
 reg_arstn_en #(.DATA_W(32)) regfile_data_1_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -144,7 +146,7 @@ reg_arstn_en #(.DATA_W(32)) regfile_data_1_pipe_ID_EXE(
       .en    (enable    ),
       .dout  (regfile_data_1_ID_EXE)
 );
-
+wire [31:0] regfile_data_2_ID_EXE
 reg_arstn_en #(.DATA_W(32)) regfile_data_2_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -152,7 +154,7 @@ reg_arstn_en #(.DATA_W(32)) regfile_data_2_pipe_ID_EXE(
       .en    (enable    ),
       .dout  (regfile_data_2_ID_EXE)
 );
-
+wire [31:0] updated_pc_ID_EXE
 reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -160,7 +162,7 @@ reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_ID_EXE(
       .en    (enable    ),
       .dout  (updated_pc_ID_EXE)
 );
-
+wire [31:0] immediate_extended_ID_EXE
 reg_arstn_en #(.DATA_W(32)) immediate_extended_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -169,8 +171,8 @@ reg_arstn_en #(.DATA_W(32)) immediate_extended_pipe_ID_EXE(
       .dout  (immediate_extended_ID_EXE)
 );
 
-
-reg_arstn_en #(.DATA_W(5)) instruction_pipe_ID_EXE(
+wire [31:0] instruction_ID_EXE
+reg_arstn_en #(.DATA_W(32)) instruction_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
       .din   (instruction),
