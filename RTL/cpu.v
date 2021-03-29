@@ -107,7 +107,7 @@ reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_IF_ID(
 
 // ---------------------------------------------- ID ----------------------------------------------
 control_unit control_unit(
-   .opcode   (instruction[31:26]),
+   .opcode   (instruction_IF_ID[31:26]),
    .reg_dst  (reg_dst           ),
    .branch   (branch            ),
    .mem_read (mem_read          ),
@@ -120,14 +120,6 @@ control_unit control_unit(
 );
 
 
-mux_2 #(
-   .DATA_W(5)
-) regfile_dest_mux (
-   .input_a (instruction[15:11]),
-   .input_b (instruction[20:16]),
-   .select_a(reg_dst          ),
-   .mux_out (regfile_waddr     )
-);
 
 register_file #(
    .DATA_W(32)
@@ -135,17 +127,61 @@ register_file #(
    .clk      (clk               ),
    .arst_n   (arst_n            ),
    .reg_write(reg_write         ),
-   .raddr_1  (instruction[25:21]),
-   .raddr_2  (instruction[20:16]),
+   .raddr_1  (instruction_IF_ID[25:21]),
+   .raddr_2  (instruction_IF_ID[20:16]),
    .waddr    (regfile_waddr     ),
    .wdata    (regfile_wdata     ),
    .rdata_1  (regfile_data_1    ),
    .rdata_2  (regfile_data_2    )
 );
 
+//---------------------------------------------- pipe regs ID - EXE ----------------------------------------------
+
+reg_arstn_en #(.DATA_W(32)) regfile_data_1_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (regfile_data_1),
+      .en    (enable    ),
+      .dout  (regfile_data_1_ID_EXE)
+);
+
+reg_arstn_en #(.DATA_W(32)) regfile_data_2_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (regfile_data_2),
+      .en    (enable    ),
+      .dout  (regfile_data_2_ID_EXE)
+);
+
+reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (updated_pc_IF_ID),
+      .en    (enable    ),
+      .dout  (updated_pc_ID_EXE)
+);
+
+reg_arstn_en #(.DATA_W(32)) immediate_extended_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (immediate_extended),
+      .en    (enable    ),
+      .dout  (immediate_extended_ID_EXE)
+);
+
+
+reg_arstn_en #(.DATA_W(5)) instruction_pipe_ID_EXE(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (instruction),
+      .en    (enable    ),
+      .dout  (instruction_ID_EXE)
+);
+
+
 // ---------------------------------------------- EXE ----------------------------------------------
 alu_control alu_ctrl(
-   .function_field (instruction[5:0]),
+   .function_field (instruction_ID_EXE[5:0]),
    .alu_op         (alu_op          ),
    .alu_control    (alu_control     )
 );
@@ -153,21 +189,30 @@ alu_control alu_ctrl(
 mux_2 #(
    .DATA_W(32)
 ) alu_operand_mux (
-   .input_a (immediate_extended),
-   .input_b (regfile_data_2    ),
+   .input_a (immediate_extended_ID_EXE),
+   .input_b (regfile_data_2_ID_EXE),
    .select_a(alu_src           ),
    .mux_out (alu_operand_2     )
+);
+
+mux_2 #(
+   .DATA_W(5)
+) regfile_dest_mux (
+   .input_a (instruction_ID_EXE[15:11]),
+   .input_b (instruction_ID_EXE[20:16]),
+   .select_a(reg_dst          ),
+   .mux_out (regfile_waddr     )
 );
 
 
 alu#(
    .DATA_W(32)
 ) alu(
-   .alu_in_0 (regfile_data_1),
+   .alu_in_0 (regfile_data_1_ID_EXE),
    .alu_in_1 (alu_operand_2 ),
    .alu_ctrl (alu_control   ),
    .alu_out  (alu_out       ),
-   .shft_amnt(instruction[10:6]),
+   .shft_amnt(instruction_ID_EXE[10:6]),
    .zero_flag(zero_flag     ),
    .overflow (              )
 );
@@ -176,9 +221,9 @@ alu#(
 branch_unit#(
    .DATA_W(32)
 )branch_unit(
-   .updated_pc   (updated_pc        ),
-   .instruction  (instruction       ),
-   .branch_offset(immediate_extended),
+   .updated_pc   (updated_pc_ID_EXE        ),
+   .instruction  (instruction_ID_EXE       ),
+   .branch_offset(immediate_extended_ID_EXE),
    .branch_pc    (branch_pc         ),
    .jump_pc      (jump_pc         )
 );

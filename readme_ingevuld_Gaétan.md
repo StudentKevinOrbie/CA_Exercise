@@ -87,9 +87,9 @@ For a processor with 5 pipelined stages (Instruction Fetch (IF), Instruction Dec
 |         | instruction  |   regfile_data_1     | zero_flag      |  alu_out       |
 |         |              |   regfile_data_2     | regfile_data_2 |  regfile_waddr |
 |         |              |   updated_pc         | branch_pc      |                | 
-|         |              |   instruction[15:11] | regfile_waddr  |                | 
-|         |              |   instruction[20:16] | jump_pc        |                | 
-
+|         |              |   instruction        | regfile_waddr  |                | 
+|         |              |                      | jump_pc        |                | 
+|         |              |                      |                |                |
 control signals:
 IF_control:
 	jump	 (EX/MEM) --> could be done without
