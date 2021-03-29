@@ -81,13 +81,36 @@ For a processor with 5 pipelined stages (Instruction Fetch (IF), Instruction Dec
 |                    |                     | regfile_dest_mux |  branch_unit     |                |                    |
 |                    |                     |                  |                  |                |                    |
 
-|         | IF &rarr; ID | ID &rarr; EXE        | EXE &rarr; MEM | MEM &rarr; WB |
-| ------- | ------------ | -------------------- | -------------- | ------------- |
-| Signals | updated_pc   |   immediate_extended | alu_out        |  dram_data    |
-|         | instruction  |   regfile_data_1     | zero_flag      |  alu_out      |
-|         |              |   regfile_data_2     | regfile_data_2 |               |
-|         |              |   updated_pc         | branch_pc      |               | 
-|         |              |                      | jump_pc        |               | 
+|         | IF &rarr; ID | ID &rarr; EXE        | EXE &rarr; MEM | MEM &rarr; WB  |
+| ------- | ------------ | -------------------- | -------------- | -------------- |
+| Signals | updated_pc   |   immediate_extended | alu_out        |  dram_data     |
+|         | instruction  |   regfile_data_1     | zero_flag      |  alu_out       |
+|         |              |   regfile_data_2     | regfile_data_2 |  regfile_waddr |
+|         |              |   updated_pc         | branch_pc      |                | 
+|         |              |   instruction[15:11] | regfile_waddr  |                | 
+|         |              |   instruction[20:16] | jump_pc        |                | 
+
+control signals:
+IF_control:
+	jump	 (EX/MEM) --> could be done without
+	
+ID_control:
+	RegWrite (MEM/WB)
+	RegDst
+
+EXE_control:
+	ALUSrc (ID/EX)
+	ALUOp  (ID/EX)
+	RegDst (ID/EX)
+	
+MEM_control:
+	MemWirte (EX/MEM)
+	MemRead  (EX/MEM)
+	branch   (EX/MEM)
+	
+WB_control:
+	MemtoReg (MEM/WB)
+
 Insert the pipelined registers where necessary, using the module `reg_arstn_en`. 
 
 ``` verilog

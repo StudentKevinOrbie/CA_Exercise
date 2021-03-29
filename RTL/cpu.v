@@ -52,7 +52,7 @@ wire signed [31:0] immediate_extended;
 
 assign immediate_extended = $signed(instruction[15:0]);
 
-
+// ---------------------------------------------- IF ----------------------------------------------
 pc #(
    .DATA_W(32)
 ) program_counter (
@@ -86,6 +86,26 @@ sram #(
    .rdata_ext(rdata_ext     )
 );
 
+// RegName = [signal_name]_pipe_[prevStage]_[followingStage]
+// OutName = [signal_name]_[followingStage]_[nextStage]
+reg_arstn_en #(.DATA_W(32)) instruction_pipe_IF_ID(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (instruction),
+      .en    (enable    ),
+      .dout  (instruction_IF_ID)
+);
+
+reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_IF_ID(
+      .clk   (clk       ),
+      .arst_n(arst_n    ),
+      .din   (updated_pc),
+      .en    (enable    ),
+      .dout  (updated_pc_IF_ID)
+);
+
+
+// ---------------------------------------------- ID ----------------------------------------------
 control_unit control_unit(
    .opcode   (instruction[31:26]),
    .reg_dst  (reg_dst           ),
@@ -123,7 +143,7 @@ register_file #(
    .rdata_2  (regfile_data_2    )
 );
 
-
+// ---------------------------------------------- EXE ----------------------------------------------
 alu_control alu_ctrl(
    .function_field (instruction[5:0]),
    .alu_op         (alu_op          ),
@@ -152,6 +172,18 @@ alu#(
    .overflow (              )
 );
 
+// Why are the results forwarded (pipelined) to MEM stage ?
+branch_unit#(
+   .DATA_W(32)
+)branch_unit(
+   .updated_pc   (updated_pc        ),
+   .instruction  (instruction       ),
+   .branch_offset(immediate_extended),
+   .branch_pc    (branch_pc         ),
+   .jump_pc      (jump_pc         )
+);
+
+// ---------------------------------------------- MEM ----------------------------------------------
 sram #(
    .ADDR_W(10),
    .DATA_W(32)
@@ -169,8 +201,7 @@ sram #(
    .rdata_ext(rdata_ext_2   )
 );
 
-
-
+// ---------------------------------------------- WB ----------------------------------------------
 mux_2 #(
    .DATA_W(32)
 ) regfile_data_mux (
@@ -180,17 +211,6 @@ mux_2 #(
    .mux_out  (regfile_wdata)
 );
 
-
-
-branch_unit#(
-   .DATA_W(32)
-)branch_unit(
-   .updated_pc   (updated_pc        ),
-   .instruction  (instruction       ),
-   .branch_offset(immediate_extended),
-   .branch_pc    (branch_pc         ),
-   .jump_pc      (jump_pc         )
-);
 
 
 endmodule
