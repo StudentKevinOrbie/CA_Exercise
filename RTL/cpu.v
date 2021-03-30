@@ -47,6 +47,12 @@ wire [       4:0] regfile_waddr;
 wire [      31:0] regfile_wdata, dram_data,alu_out,
                   regfile_data_1,regfile_data_2,
                   alu_operand_2;
+wire zero_flag_EXE_MEM;
+wire MEM_branch;
+wire MEM_jump;
+wire [31:0] regfile_waddr_MEM_WB;
+wire WB_reg_write;
+
 
 wire signed [31:0] immediate_extended;
 
@@ -346,7 +352,7 @@ reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_EXE_MEM(
       .dout  (MEM_ctrl_EXE_MEM)
 );
 
-wire zero_flag_EXE_MEM;
+
 reg_arstn_en #(.DATA_W(1)) zero_flag_pipe_EXE_MEM(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -360,8 +366,6 @@ reg_arstn_en #(.DATA_W(1)) zero_flag_pipe_EXE_MEM(
 // -------------------------------------------------------------------------------------------------
 wire MEM_mem_write;
 wire MEM_mem_read;
-wire MEM_branch;
-wire MEM_jump;
 always@(*) {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
 
 sram #(
@@ -402,7 +406,7 @@ reg_arstn_en #(.DATA_W(32)) alu_out_pipe_MEM_WB(
 );
 
 // Through
-wire [31:0] regfile_waddr_MEM_WB;
+
 reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_MEM_WB(
       .clk   (clk            ),
       .arst_n(arst_n         ),
@@ -426,7 +430,7 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_MEM_WB(
 // ---------------------------------------------- WB -----------------------------------------------
 // -------------------------------------------------------------------------------------------------
 wire WB_mem_2_reg;
-wire WB_reg_write;
+
 always@(*) {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
 
 mux_2 #(
