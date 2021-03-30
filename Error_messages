@@ -12,38 +12,44 @@ file: ../RTL/control_unit.v
 	module worklib.control_unit:v
 		errors: 0, warnings: 0
 file: ../RTL/cpu.v
-   .zero_flag (zero_flag_EXE_MEM ),
-                               |
-ncvlog: *E,DUPIMP (../RTL/cpu.v,66|31): Identifier 'zero_flag_EXE_MEM', implicitly declared here, first as a wire, is subsequently redeclared.
-wire zero_flag_EXE_MEM;
-                     |
-ncvlog: *E,DUPIDN (../RTL/cpu.v,349|21): identifier 'zero_flag_EXE_MEM' previously declared [12.5(IEEE)].
-   .branch    (MEM_branch    ),
-                        |
-ncvlog: *E,DUPIMP (../RTL/cpu.v,67|24): Identifier 'MEM_branch', implicitly declared here, first as a wire, is subsequently redeclared.
-wire MEM_branch;
-              |
-ncvlog: *E,DUPIDN (../RTL/cpu.v,363|14): identifier 'MEM_branch' previously declared [12.5(IEEE)].
-   .jump      (MEM_jump      ),
+always@(*) WB_ctrl = {mem_2_reg, reg_write};
+                 |
+ncvlog: *E,WANOTL (../RTL/cpu.v,202|17): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) EXE_ctrl = {alu_src, alu_op, reg_dst};
+                  |
+ncvlog: *E,WANOTL (../RTL/cpu.v,212|18): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) MEM_ctrl = {mem_write, mem_read, branch, jump};
+                  |
+ncvlog: *E,WANOTL (../RTL/cpu.v,222|18): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {EXE_alu_src, EXE_alu_op, EXE_reg_dst} = EXE_ctrl_ID_EXE;
                       |
-ncvlog: *E,DUPIMP (../RTL/cpu.v,68|22): Identifier 'MEM_jump', implicitly declared here, first as a wire, is subsequently redeclared.
-wire MEM_jump;
-            |
-ncvlog: *E,DUPIDN (../RTL/cpu.v,364|12): identifier 'MEM_jump' previously declared [12.5(IEEE)].
-   .waddr    (regfile_waddr_MEM_WB    ),
-                                 |
-ncvlog: *E,DUPIMP (../RTL/cpu.v,137|33): Identifier 'regfile_waddr_MEM_WB', implicitly declared here, first as a wire, is subsequently redeclared.
-wire [31:0] regfile_waddr_MEM_WB;
-                               |
-ncvlog: *E,DUPIDN (../RTL/cpu.v,405|31): identifier 'regfile_waddr_MEM_WB' previously declared [12.5(IEEE)].
-   .reg_write(WB_reg_write      ),
-                         |
-ncvlog: *E,DUPIMP (../RTL/cpu.v,134|25): Identifier 'WB_reg_write', implicitly declared here, first as a wire, is subsequently redeclared.
-wire WB_reg_write;
-                |
-ncvlog: *E,DUPIDN (../RTL/cpu.v,429|16): identifier 'WB_reg_write' previously declared [12.5(IEEE)].
+ncvlog: *E,WANOTL (../RTL/cpu.v,237|22): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {EXE_alu_src, EXE_alu_op, EXE_reg_dst} = EXE_ctrl_ID_EXE;
+                                  |
+ncvlog: *E,WANOTL (../RTL/cpu.v,237|34): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {EXE_alu_src, EXE_alu_op, EXE_reg_dst} = EXE_ctrl_ID_EXE;
+                                               |
+ncvlog: *E,WANOTL (../RTL/cpu.v,237|47): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
+                        |
+ncvlog: *E,WANOTL (../RTL/cpu.v,369|24): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
+                                      |
+ncvlog: *E,WANOTL (../RTL/cpu.v,369|38): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
+                                                  |
+ncvlog: *E,WANOTL (../RTL/cpu.v,369|50): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
+                                                            |
+ncvlog: *E,WANOTL (../RTL/cpu.v,369|60): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
+                       |
+ncvlog: *E,WANOTL (../RTL/cpu.v,434|23): A net is not a legal lvalue in this context [9.3.1(IEEE)].
+always@(*) {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
+                                     |
+ncvlog: *E,WANOTL (../RTL/cpu.v,434|37): A net is not a legal lvalue in this context [9.3.1(IEEE)].
 	module worklib.cpu:v
-		errors: 10, warnings: 0
+		errors: 12, warnings: 0
 file: ../RTL/mux_2.v
 	module worklib.mux_2:v
 		errors: 0, warnings: 0
@@ -366,8 +372,7 @@ ncvlog: *W,MACRDF (../RTL/saed32sram_mod.v,4245|20): text macro 'wordLength' red
 		errors: 0, warnings: 52
 ncverilog: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
 make: *** [makefile:47: nc] Error 1
-[r0721645@stud-c8-15 SIM]$ ^C
-[r0721645@stud-c8-15 SIM]$ 
+
 
  
 
