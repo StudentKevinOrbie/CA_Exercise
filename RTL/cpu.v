@@ -199,7 +199,7 @@ wire [3:0] MEM_ctrl;
 wire [2:0] EXE_ctrl;
 
 wire [1:0] WB_ctrl_ID_EXE;
-always@(*) WB_ctrl = {mem_2_reg, reg_write};
+assign WB_ctrl = {mem_2_reg, reg_write};
 reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -209,7 +209,7 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
 );
 
 wire [2:0] EXE_ctrl_ID_EXE;
-always@(*) EXE_ctrl = {alu_src, alu_op, reg_dst};
+assign EXE_ctrl = {alu_src, alu_op, reg_dst};
 reg_arstn_en #(.DATA_W(3)) EXE_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -219,7 +219,7 @@ reg_arstn_en #(.DATA_W(3)) EXE_ctrl_pipe_ID_EXE(
 );
 
 wire [3:0] MEM_ctrl_ID_EXE;
-always@(*) MEM_ctrl = {mem_write, mem_read, branch, jump};
+assign MEM_ctrl = {mem_write, mem_read, branch, jump};
 reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -234,7 +234,7 @@ reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_ID_EXE(
 wire EXE_alu_src;
 wire EXE_alu_op;
 wire EXE_reg_dst;
-always@(*) {EXE_alu_src, EXE_alu_op, EXE_reg_dst} = EXE_ctrl_ID_EXE;
+assign {EXE_alu_src, EXE_alu_op, EXE_reg_dst} = EXE_ctrl_ID_EXE;
 
 alu_control alu_ctrl(
    .function_field (instruction_ID_EXE[5:0]),
@@ -366,7 +366,7 @@ reg_arstn_en #(.DATA_W(1)) zero_flag_pipe_EXE_MEM(
 // -------------------------------------------------------------------------------------------------
 wire MEM_mem_write;
 wire MEM_mem_read;
-always@(*) {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
+assign {MEM_mem_write, MEM_mem_read, MEM_branch, MEM_jump} = MEM_ctrl_EXE_MEM;
 
 sram #(
    .ADDR_W(10),
@@ -431,7 +431,7 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_MEM_WB(
 // -------------------------------------------------------------------------------------------------
 wire WB_mem_2_reg;
 
-always@(*) {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
+assign {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
 
 mux_2 #(
    .DATA_W(32)
