@@ -235,7 +235,10 @@ reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_ID_EXE(
 wire EXE_alu_src;
 wire [1:0] EXE_alu_op;
 wire EXE_reg_dst;
-assign {EXE_alu_src, EXE_alu_op[1], EXE_alu_op[0], EXE_reg_dst} = EXE_ctrl_ID_EXE;
+assign EXE_alu_src = EXE_ctrl_ID_EXE[3];
+assign EXE_alu_op[1] = EXE_ctrl_ID_EXE[2];
+assign EXE_alu_op[0] = EXE_ctrl_ID_EXE[1];
+assign EXE_reg_dst = EXE_ctrl_ID_EXE[0];
 
 alu_control alu_ctrl(
    .function_field (instruction_ID_EXE[5:0]),
