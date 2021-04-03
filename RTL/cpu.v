@@ -184,11 +184,12 @@ reg_arstn_en #(.DATA_W(32)) immediate_extended_pipe_ID_EXE(
       .dout  (immediate_extended_ID_EXE)
 );
 
+// Through
 wire [31:0] instruction_ID_EXE;
 reg_arstn_en #(.DATA_W(32)) instruction_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
-      .din   (instruction),
+      .din   (instruction_IF_ID),
       .en    (enable    ),
       .dout  (instruction_ID_EXE)
 );
@@ -406,7 +407,6 @@ reg_arstn_en #(.DATA_W(32)) alu_out_pipe_MEM_WB(
 );
 
 // Through
-
 reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_MEM_WB(
       .clk   (clk            ),
       .arst_n(arst_n         ),
@@ -430,7 +430,6 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_MEM_WB(
 // ---------------------------------------------- WB -----------------------------------------------
 // -------------------------------------------------------------------------------------------------
 wire WB_mem_2_reg;
-
 assign {WB_mem_2_reg, WB_reg_write} = WB_ctrl_MEM_WB;
 
 mux_2 #(
