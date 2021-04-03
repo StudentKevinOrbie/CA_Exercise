@@ -56,7 +56,7 @@ wire WB_reg_write;
 
 wire signed [31:0] immediate_extended;
 
-assign immediate_extended = $signed(instruction[15:0]);
+assign immediate_extended = $signed(instruction_IF_ID[15:0]);
 
 // -------------------------------------------------------------------------------------------------
 // ---------------------------------------------- IF -----------------------------------------------
