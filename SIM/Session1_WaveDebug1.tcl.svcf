@@ -1,0 +1,247 @@
+# SimVision Command Script (Sat Apr 03 08:11:16 PM CEST 2021)
+#
+# Version 15.20.s058
+#
+# You can restore this configuration with:
+#
+#      ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION -linedebug +gui +tcl+Session1_WaveDebug1.tcl
+#
+
+
+#
+# Preferences
+#
+preferences set plugin-enable-svdatabrowser-new 1
+preferences set toolbar-sendToIndago-WaveWindow {
+  usual
+  position -pos 1
+}
+preferences set toolbar-Standard-Console {
+  usual
+  position -pos 1
+}
+preferences set toolbar-Search-Console {
+  usual
+  position -pos 2
+}
+preferences set plugin-enable-groupscope 0
+preferences set plugin-enable-interleaveandcompare 0
+preferences set plugin-enable-waveformfrequencyplot 0
+
+#
+# Simulator
+#
+database require simulator -hints {
+	simulator "ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION -linedebug +gui -input Session1_WaveDebug1.tcl"
+}
+
+#
+# Mnemonic Maps
+#
+mmap new -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+#
+# Design Browser windows
+#
+if {[catch {window new WatchList -name "Design Browser 1" -geometry 1065x840+4+30}] != ""} {
+    window geometry "Design Browser 1" 1065x840+4+30
+}
+window target "Design Browser 1" on
+browser using {Design Browser 1}
+browser set -scope [subst  {simulator::[format {cpu_tb.dut}]} ]
+browser set \
+    -signalsort name
+browser yview see [subst  {simulator::[format {cpu_tb.dut}]} ]
+browser timecontrol set -lock 0
+
+#
+# Waveform windows
+#
+if {[catch {window new WaveWindow -name "Waveform 1" -geometry 1920x915+-1+26}] != ""} {
+    window geometry "Waveform 1" 1920x915+-1+26
+}
+window target "Waveform 1" on
+waveform using {Waveform 1}
+waveform sidebar visibility partial
+waveform set \
+    -primarycursor TimeA \
+    -signalnames name \
+    -signalwidth 221 \
+    -units fs \
+    -valuewidth 75
+waveform baseline set -time 300fs
+
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.clk}]}
+	} ]]
+waveform format $id -color #00ff00
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.instruction[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.updated_pc[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.current_pc[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #000000
+set id [waveform add -cdivider divider]
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.EXE_ctrl[2:0]}]}
+	} ]]
+waveform format $id -radix %b -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.MEM_ctrl[3:0]}]}
+	} ]]
+waveform format $id -radix %b -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.WB_ctrl[1:0]}]}
+	} ]]
+waveform format $id -radix %b -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.instruction_IF_ID[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.updated_pc_IF_ID[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.regfile_data_1[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.regfile_data_2[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.immediate_extended[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #323232
+set id [waveform add -cdivider divider]
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.EXE_alu_src}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.EXE_alu_op[1:0]}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.EXE_reg_dst}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.MEM_ctrl_ID_EXE[3:0]}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.WB_ctrl_ID_EXE[1:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.instruction_ID_EXE[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.immediate_extended_ID_EXE[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.updated_pc_ID_EXE[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.regfile_data_2_ID_EXE[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.regfile_data_1_ID_EXE[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.alu_out[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.regfile_waddr[4:0]}]}
+	} ]]
+waveform format $id -bgcolor #000000
+set id [waveform add -cdivider divider]
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.MEM_jump}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.MEM_mem_read}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.MEM_mem_write}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.MEM_branch}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.WB_ctrl_EXE_MEM[1:0]}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.alu_out_EXE_MEM[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.regfile_data_2_EXE_MEM[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.regfile_waddr_EXE_MEM[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #323232
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.dram_data[31:0]}]}
+	} ]]
+waveform format $id -bgcolor #323232
+set id [waveform add -cdivider divider]
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.WB_mem_2_reg}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.WB_reg_write}]}
+	} ]]
+waveform format $id -color #00ffff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.alu_out_MEM_WB[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+set id [waveform add -signals [subst  {
+	{simulator::[format {cpu_tb.dut.dram_data_MEM_WB[31:0]}]}
+	} ]]
+waveform format $id -color #ff00ff -bgcolor #000000
+
+waveform xview limits 155960738000fs 158057890000fs
+
+#
+# Waveform Window Links
+#
+
+#
+# Console windows
+#
+console set -windowname Console
+window geometry Console 730x250+1174+87
+
+#
+# Layout selection
+#
+

@@ -2,3 +2,5 @@
 *
 # Except this file
 !.gitignore
+!Session1_WaveDebug1.tcl
+!Session1_WaveDebug1.tcl.svcf
