@@ -197,7 +197,7 @@ reg_arstn_en #(.DATA_W(32)) instruction_pipe_ID_EXE(
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Control ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 wire [1:0] WB_ctrl;
 wire [3:0] MEM_ctrl;
-wire [2:0] EXE_ctrl;
+wire [3:0] EXE_ctrl;
 
 wire [1:0] WB_ctrl_ID_EXE;
 assign WB_ctrl = {mem_2_reg, reg_write};
