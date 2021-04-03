@@ -211,7 +211,7 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
 
 wire [3:0] EXE_ctrl_ID_EXE;
 assign EXE_ctrl = {alu_src, alu_op[1], alu_op[0], reg_dst};
-reg_arstn_en #(.DATA_W(3)) EXE_ctrl_pipe_ID_EXE(
+reg_arstn_en #(.DATA_W(4)) EXE_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
       .din   (EXE_ctrl   ),
