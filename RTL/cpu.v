@@ -209,7 +209,7 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
       .dout  (WB_ctrl_ID_EXE)
 );
 
-wire [2:0] EXE_ctrl_ID_EXE;
+wire [3:0] EXE_ctrl_ID_EXE;
 assign EXE_ctrl = {alu_src, alu_op, reg_dst};
 reg_arstn_en #(.DATA_W(3)) EXE_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
@@ -233,7 +233,7 @@ reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_ID_EXE(
 // ---------------------------------------------- EXE ----------------------------------------------
 // -------------------------------------------------------------------------------------------------
 wire EXE_alu_src;
-wire EXE_alu_op;
+wire [1:0] EXE_alu_op;
 wire EXE_reg_dst;
 assign {EXE_alu_src, EXE_alu_op, EXE_reg_dst} = EXE_ctrl_ID_EXE;
 
