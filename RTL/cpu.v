@@ -52,7 +52,7 @@ wire MEM_branch;
 wire MEM_jump;
 wire [31:0] regfile_waddr_MEM_WB;
 wire WB_reg_write;
-
+wire [31:0] instruction_IF_ID;
 
 wire signed [31:0] immediate_extended;
 
@@ -97,7 +97,6 @@ sram #(
 
 // RegName = [signal_name]_pipe_[prevStage]_[followingStage]
 // OutName = [signal_name]_[followingStage]_[nextStage]
-wire [31:0] instruction_IF_ID;
 reg_arstn_en #(.DATA_W(32)) instruction_pipe_IF_ID(
       .clk   (clk       ),
       .arst_n(arst_n    ),
