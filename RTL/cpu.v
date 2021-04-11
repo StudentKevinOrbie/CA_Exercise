@@ -288,6 +288,18 @@ branch_unit#(
    .jump_pc      (jump_pc         )
 );
 
+forwarding_unit#(
+      .DATA_W(32)
+)forwarding_unit(
+      .WB_ctrl_EXE_MEM(WB_ctrl_EXE_MEM),
+      .WB_ctrl_MEM_WB(WB_ctrl_MEM_WB),
+      .regfile_waddr_EXE_MEM(regfile_waddr_EXE_MEM),
+      .regfile_waddr_MEM_WB(regfile_waddr_MEM_WB),
+      .instruction_ID_EXE_Rs(instruction_ID_EXE[25:21]),
+      .instruction_ID_EXE_Rt(instruction_ID_EXE[20:16]),
+      .alu_op_1_ctrl,
+      .alu_op_2_ctrl
+)
 // =================================== pipe regs EXE - MEM ===================================
 wire [31:0] alu_out_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) alu_out_pipe_EXE_MEM(

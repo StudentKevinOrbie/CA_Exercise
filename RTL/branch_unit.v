@@ -11,15 +11,16 @@
 module branch_unit#(
    parameter integer DATA_W     = 16
    )(
-      input  wire signed [DATA_W-1:0]  updated_pc,
-      input  wire signed [DATA_W-1:0]  instruction,
-      input  wire signed [DATA_W-1:0]  branch_offset,
-      output reg  signed [DATA_W-1:0]  branch_pc,
-      output reg  signed [DATA_W-1:0]  jump_pc
+      input  wire signed [DATA_W-1:0]  WB_ctrl_EXE_MEM,
+      input  wire signed [DATA_W-1:0]  WB_ctrl_MEM_WB,
+      input  wire signed [DATA_W-1:0]  regfile_waddr_EXE_MEM,
+      input  wire signed [DATA_W-1:0]  regfile_waddr_MEM_WB,
+      input  wire signed [DATA_W-1:0]  instruction_ID_EXE_Rs,
+      input  wire signed [DATA_W-1:0]  instruction_ID_EXE_Rt,
+      output wire signed [1:0]         alu_op_1_ctrl,
+      output wire signed [1:0]         alu_op_2_ctrl
    );
 
-   reg signed [DATA_W-1:0] shifted_offset;
-   reg signed [DATA_W-1:0] shifted_instruction;
 
  
    always@(*) shifted_offset      = branch_offset<<2;
