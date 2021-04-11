@@ -46,7 +46,7 @@ wire              reg_dst,branch,mem_read,mem_2_reg,
 wire [       4:0] regfile_waddr;
 wire [      31:0] regfile_wdata, dram_data,alu_out,
                   regfile_data_1,regfile_data_2,
-                  alu_operand_2;
+                  alu_operand_2, forward1, forward2;
 wire zero_flag_EXE_MEM;
 wire MEM_branch;
 wire MEM_jump;
@@ -239,6 +239,19 @@ assign EXE_alu_op[1] = EXE_ctrl_ID_EXE[2];
 assign EXE_alu_op[0] = EXE_ctrl_ID_EXE[1];
 assign EXE_reg_dst = EXE_ctrl_ID_EXE[0];
 
+forwarding_unit#(
+      .DATA_W(32)
+)forwarding_unit(
+      .WB_ctrl_EXE_MEM       (WB_ctrl_EXE_MEM          ),
+      .WB_ctrl_MEM_WB        (WB_ctrl_MEM_WB           ),
+      .regfile_waddr_EXE_MEM (regfile_waddr_EXE_MEM    ),
+      .regfile_waddr_MEM_WB  (regfile_waddr_MEM_WB     ),
+      .instruction_ID_EXE_Rs (instruction_ID_EXE[25:21]),
+      .instruction_ID_EXE_Rt (instruction_ID_EXE[20:16]),
+      .alu_op_1_ctrl         (alu_op_1_ctrl            ),
+      .alu_op_2_ctrl         (alu_op_2_ctrl            )
+)
+
 alu_control alu_ctrl(
    .function_field (instruction_ID_EXE[5:0]),
    .alu_op         (EXE_alu_op      ),
@@ -259,16 +272,35 @@ mux_2 #(
 ) regfile_dest_mux (
    .input_a (instruction_ID_EXE[15:11]),
    .input_b (instruction_ID_EXE[20:16]),
-   .select_a(EXE_reg_dst       ),
-   .mux_out (regfile_waddr     )
+   .select_a(alu_op_1_ctrl            ),
+   .mux_out (regfile_waddr            )
 );
 
+mux_forwarding#(
+      .DATA_W(32)
+) mux_forwarding_1 (
+   .input_a (regfile_data_1_ID_EXE),
+   .input_b (regfile_wdata        ),
+   .input_c (alu_out_EXE_MEM      ),
+   .select_a(alu_op_1_ctrl        ),
+   .mux_out (forward1             )
+)
+
+mux_forwarding#(
+      .DATA_W(32)
+) mux_forwarding_2 (
+   .input_a (regfile_data_2_ID_EXE),
+   .input_b (regfile_wdata        ),
+   .input_c (alu_out_EXE_MEM      ),
+   .select_a(alu_op_2_ctrl        ),
+   .mux_out (forward2             )
+)
 
 alu#(
    .DATA_W(32)
 ) alu(
-   .alu_in_0 (regfile_data_1_ID_EXE),
-   .alu_in_1 (alu_operand_2 ),
+   .alu_in_0 (forward1),
+   .alu_in_1 (forward2),
    .alu_ctrl (alu_control   ),
    .alu_out  (alu_out       ),
    .shft_amnt(instruction_ID_EXE[10:6]),
@@ -287,18 +319,7 @@ branch_unit#(
    .jump_pc      (jump_pc         )
 );
 
-forwarding_unit#(
-      .DATA_W(32)
-)forwarding_unit(
-      .WB_ctrl_EXE_MEM(WB_ctrl_EXE_MEM),
-      .WB_ctrl_MEM_WB(WB_ctrl_MEM_WB),
-      .regfile_waddr_EXE_MEM(regfile_waddr_EXE_MEM),
-      .regfile_waddr_MEM_WB(regfile_waddr_MEM_WB),
-      .instruction_ID_EXE_Rs(instruction_ID_EXE[25:21]),
-      .instruction_ID_EXE_Rt(instruction_ID_EXE[20:16]),
-      .alu_op_1_ctrl,
-      .alu_op_2_ctrl
-)
+
 // =================================== pipe regs EXE - MEM ===================================
 wire [31:0] alu_out_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) alu_out_pipe_EXE_MEM(

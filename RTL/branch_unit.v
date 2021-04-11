@@ -1,4 +1,4 @@
-module forwarding_unit#(
+module branch_unit#(
    parameter integer DATA_W     = 16
    )(
       input  wire signed [DATA_W-1:0]  updated_pc,

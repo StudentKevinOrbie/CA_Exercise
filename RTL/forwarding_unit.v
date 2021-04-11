@@ -8,7 +8,7 @@
 //branch_pc: Target PC in the case of a branch instruction.
 //jump_pc: Target PC in the case of a jump instruction.
 
-module branch_unit#(
+module forwarding_unit#(
    parameter integer DATA_W     = 16
    )(
       input  wire signed [DATA_W-1:0]  WB_ctrl_EXE_MEM,
@@ -22,12 +22,32 @@ module branch_unit#(
    );
 
 
- 
-   always@(*) shifted_offset      = branch_offset<<2;
-   always@(*) shifted_instruction = instruction<<2;
-   always@(*) branch_pc           = shifted_offset+updated_pc;
-   always@(*) jump_pc             = {updated_pc[31:28],shifted_instruction[27:0]};
-  
+   always@(*) begin
+
+      // Generating muxcontrol for upper forwarding mux
+      if (WB_ctrl_EXE_MEM == 1'b1
+      && (regfile_waddr_EXE_MEM == instruction_ID_EXE_Rs)) begin 
+         alu_op_1_ctrl = 2'b2;
+      end else if (WB_ctrl_MEM_WB == 1'b1 
+      && !(WB_ctrl_EXE_MEM == 1'b1 && (regfile_waddr_EXE_MEM !== instruction_ID_EXE_Rs))
+      && (regfile_waddr_MEM_WB == instruction_ID_EXE_Rs)) begin 
+         alu_op_1_ctrl = 2'b1;
+      end else begin
+         alu_op_1_ctrl = 2'b0;
+      end
+
+      // Generating muxcontrol for lower forwarding mux
+      if (WB_ctrl_EXE_MEM == 1'b1
+      && (regfile_waddr_EXE_MEM == instruction_ID_EXE_Rt)) begin
+         alu_op_2_ctrl = 2'b2;
+      end else if (WB_ctrl_MEM_WB == 1'b1 
+      && !(WB_ctrl_EXE_MEM == 1'b1 && (regfile_waddr_EXE_MEM !== instruction_ID_EXE_Rt))
+      && (regfile_waddr_MEM_WB == instruction_ID_EXE_Rt)) begin 
+         alu_op_2_ctrl = 2'b1;
+      end else begin
+         alu_op_2_ctrl = 2'b0;
+      end
+   end
 endmodule
 
 
