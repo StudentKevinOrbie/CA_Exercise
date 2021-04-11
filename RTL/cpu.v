@@ -54,6 +54,11 @@ wire [31:0] regfile_waddr_MEM_WB;
 wire WB_reg_write;
 wire [31:0] instruction_IF_ID;
 
+// For hazard detection unit stall
+wire EXE_ctrl_mux_ctrl;
+wire IF_ID_pipe_enable;
+wire PC_write_enable;
+
 wire signed [31:0] immediate_extended;
 
 assign immediate_extended = $signed(instruction_IF_ID[15:0]);
@@ -73,7 +78,7 @@ pc #(
    .branch    (MEM_branch    ),
    .jump      (MEM_jump      ),
    .current_pc(current_pc),
-   .enable    (enable    ),
+   .enable    (PC_write_enable & enable),
    .updated_pc(updated_pc)
 );
 
@@ -95,13 +100,15 @@ sram #(
    .rdata_ext(rdata_ext     )
 );
 
+// =================================== pipe regs IF - ID ===================================
 // RegName = [signal_name]_pipe_[prevStage]_[followingStage]
 // OutName = [signal_name]_[followingStage]_[nextStage]
+
 reg_arstn_en #(.DATA_W(32)) instruction_pipe_IF_ID(
       .clk   (clk       ),
       .arst_n(arst_n    ),
       .din   (instruction),
-      .en    (enable    ),
+      .en    (IF_ID_pipe_enable & enable),
       .dout  (instruction_IF_ID)
 );
 
@@ -110,7 +117,7 @@ reg_arstn_en #(.DATA_W(32)) updated_pc_pipe_IF_ID(
       .clk   (clk       ),
       .arst_n(arst_n    ),
       .din   (updated_pc),
-      .en    (enable    ),
+      .en    (IF_ID_pipe_enable & enable),
       .dout  (updated_pc_IF_ID)
 );
 
@@ -143,6 +150,18 @@ register_file #(
    .wdata    (regfile_wdata     ),
    .rdata_1  (regfile_data_1    ),
    .rdata_2  (regfile_data_2    )
+);
+
+hazard_detection_unit #(
+   .DATA_W(32)
+) hazard_detection_unit(
+      .MEM_ctrl_ID_EXE_mem_read (MEM_ctrl_ID_EXE[2]        ),
+      .instruction_ID_EXE_Rt    (instruction_ID_EXE[20:16] ),
+      .instruction_IF_ID_Rs     (instruction_IF_ID[25:21]  ),
+      .instruction_IF_ID_Rt     (instruction_IF_ID[20:16]  ),
+      .EXE_ctrl_mux_ctrl        (EXE_ctrl_mux_ctrl         ),
+      .IF_ID_pipe_enable        (IF_ID_pipe_enable         ), 
+      .PC_write_enable          (PC_write_enable           ) 
 );
 
 // =================================== pipe regs ID - EXE ===================================
@@ -199,7 +218,7 @@ wire [3:0] MEM_ctrl;
 wire [3:0] EXE_ctrl;
 
 wire [1:0] WB_ctrl_ID_EXE;
-assign WB_ctrl = {mem_2_reg, reg_write};
+assign WB_ctrl = EXE_ctrl_mux_ctrl ? {mem_2_reg, reg_write} : {1'b0, 1'b0}; // Ctrl = 0 --> all ctrl = 0
 reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -209,7 +228,7 @@ reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_ID_EXE(
 );
 
 wire [3:0] EXE_ctrl_ID_EXE;
-assign EXE_ctrl = {alu_src, alu_op[1], alu_op[0], reg_dst};
+assign EXE_ctrl = EXE_ctrl_mux_ctrl ? {alu_src, alu_op[1], alu_op[0], reg_dst} : {1'b0, 1'b0, 1'b0, 1'b0} ;
 reg_arstn_en #(.DATA_W(4)) EXE_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -219,7 +238,7 @@ reg_arstn_en #(.DATA_W(4)) EXE_ctrl_pipe_ID_EXE(
 );
 
 wire [3:0] MEM_ctrl_ID_EXE;
-assign MEM_ctrl = {mem_write, mem_read, branch, jump};
+assign MEM_ctrl = EXE_ctrl_mux_ctrl ? {mem_write, mem_read, branch, jump} : {1'b0, 1'b0, 1'b0, 1'b0};
 reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -298,7 +317,8 @@ forwarding_unit#(
       .instruction_ID_EXE_Rt(instruction_ID_EXE[20:16]),
       .alu_op_1_ctrl,
       .alu_op_2_ctrl
-)
+);
+
 // =================================== pipe regs EXE - MEM ===================================
 wire [31:0] alu_out_EXE_MEM;
 reg_arstn_en #(.DATA_W(32)) alu_out_pipe_EXE_MEM(
