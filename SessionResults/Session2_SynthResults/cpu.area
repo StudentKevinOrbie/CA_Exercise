@@ -1,0 +1,137 @@
+ 
+****************************************
+Report : area
+Design : cpu
+Version: N-2017.09-SP3
+Date   : Sun Apr  4 20:35:45 2021
+****************************************
+
+Information: Updating design information... (UID-85)
+Library(s) Used:
+
+    saed32rvt_tt1p05v25c (File: /users/micas/micas/design/generic/synopsys_32nm/SAED32_EDK/lib/stdcell_rvt/db_ccs/saed32rvt_tt1p05v25c.db)
+    saed32sram_tt1p05v25c (File: /users/micas/micas/design/generic/synopsys_32nm/SAED32_EDK/lib/sram/db_ccs/saed32sram_tt1p05v25c.db)
+
+Number of ports:                         2491
+Number of nets:                          6175
+Number of cells:                         3339
+Number of combinational cells:           2719
+Number of sequential cells:               558
+Number of macros/black boxes:              12
+Number of buf/inv:                        196
+Number of references:                      32
+
+Combinational area:               7302.573678
+Buf/Inv area:                      249.061121
+Noncombinational area:            2525.937260
+Macro/Black Box area:           227919.492188
+Net Interconnect area:            6445.062198
+
+Total cell area:                237748.003125
+Total area:                     244193.065324
+
+Information: This design contains black box (unknown) components. (RPT-8)
+
+Hierarchical area distribution
+------------------------------
+
+                                  Global cell area               Local cell area
+                                  --------------------  --------------------------------- 
+Hierarchical cell                 Absolute     Percent  Combi-     Noncombi-  Black-
+                                  Total        Total    national   national   boxes        Design
+--------------------------------  -----------  -------  ---------  ---------  -----------  -----------------------------------------------
+cpu                               237748.0031    100.0     6.3536     0.0000       0.0000  cpu
+EXE_ctrl_pipe_ID_EXE                  27.1934      0.0     0.0000    21.3481       0.0000  reg_arstn_en_DATA_W4_2
+EXE_ctrl_pipe_ID_EXE/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W4_2
+MEM_ctrl_pipe_EXE_MEM                 27.1934      0.0     0.0000    21.3481       0.0000  reg_arstn_en_DATA_W4_0
+MEM_ctrl_pipe_EXE_MEM/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W4_0_0
+MEM_ctrl_pipe_ID_EXE                  27.1934      0.0     0.0000    21.3481       0.0000  reg_arstn_en_DATA_W4_1
+MEM_ctrl_pipe_ID_EXE/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W4_0_1
+WB_ctrl_pipe_EXE_MEM                  21.8564      0.0     7.6243    14.2321       0.0000  reg_arstn_en_DATA_W2_1
+WB_ctrl_pipe_ID_EXE                   20.5857      0.0     6.3536    14.2321       0.0000  reg_arstn_en_DATA_W2_2
+WB_ctrl_pipe_MEM_WB                   20.5857      0.0     6.3536    14.2321       0.0000  reg_arstn_en_DATA_W2_0
+alu                                 5433.8528      2.3  5433.8528     0.0000       0.0000  alu_DATA_W32
+alu_ctrl                              43.2045      0.0    43.2045     0.0000       0.0000  alu_control
+alu_operand_mux                       82.5968      0.0    82.5968     0.0000       0.0000  mux_2_DATA_W32_3
+alu_out_pipe_EXE_MEM                 233.5583      0.1     0.0000   227.7130       0.0000  reg_arstn_en_DATA_W32_7
+alu_out_pipe_EXE_MEM/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_4
+alu_out_pipe_MEM_WB                  233.5583      0.1     0.0000   227.7130       0.0000  reg_arstn_en_DATA_W32_1
+alu_out_pipe_MEM_WB/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_1
+branch_unit                           43.9669      0.0    43.9669     0.0000       0.0000  branch_unit_DATA_W32
+control_unit                          42.9503      0.0    42.9503     0.0000       0.0000  control_unit
+data_memory                       152882.3405     64.3   936.0124     0.0000  151946.3281  sram_ADDR_W10_DATA_W32
+dram_data_pipe_MEM_WB                233.5583      0.1     0.0000   227.7130       0.0000  reg_arstn_en_DATA_W32_2
+dram_data_pipe_MEM_WB/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_2
+immediate_extended_pipe_ID_EXE       120.9725      0.1     1.2707   113.8565       0.0000  reg_arstn_en_DATA_W32_9
+immediate_extended_pipe_ID_EXE/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_5
+instruction_memory                 76456.8001     32.2   483.6360     0.0000   75973.1641  sram_ADDR_W9_DATA_W32
+instruction_pipe_ID_EXE              167.9892      0.1    12.7072   149.4367       0.0000  reg_arstn_en_DATA_W32_8
+instruction_pipe_ID_EXE/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_8
+instruction_pipe_IF_ID               233.5583      0.1     0.0000   227.7130       0.0000  reg_arstn_en_DATA_W32_14
+instruction_pipe_IF_ID/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_10
+program_counter                      162.6522      0.1    44.4752     0.0000       0.0000  pc_DATA_W32
+program_counter/mux_branch            24.1437      0.0    24.1437     0.0000       0.0000  mux_2_DATA_W32_1
+program_counter/mux_jump              24.1437      0.0    24.1437     0.0000       0.0000  mux_2_DATA_W32_0
+program_counter/pc_register           69.8896      0.0     0.0000    64.0443       0.0000  reg_arstn_en_32_s00000000
+program_counter/pc_register/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_32_s00000000
+regfile_data_1_pipe_ID_EXE           233.5583      0.1     0.0000   227.7130       0.0000  reg_arstn_en_DATA_W32_12
+regfile_data_1_pipe_ID_EXE/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_8
+regfile_data_2_pipe_EXE_MEM          233.5583      0.1     0.0000   227.7130       0.0000  reg_arstn_en_DATA_W32_6
+regfile_data_2_pipe_EXE_MEM/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_3
+regfile_data_2_pipe_ID_EXE           236.0998      0.1     2.5414   227.7130       0.0000  reg_arstn_en_DATA_W32_11
+regfile_data_2_pipe_ID_EXE/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_7
+regfile_data_mux                      82.5968      0.0    82.5968     0.0000       0.0000  mux_2_DATA_W32_2
+regfile_dest_mux                      13.9779      0.0    13.9779     0.0000       0.0000  mux_2_DATA_W5
+regfile_waddr_pipe_EXE_MEM            41.4255      0.0     0.0000    35.5802       0.0000  reg_arstn_en_DATA_W32_4
+regfile_waddr_pipe_EXE_MEM/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_4
+regfile_waddr_pipe_MEM_WB            233.5583      0.1     0.0000   227.7130       0.0000  reg_arstn_en_DATA_W32_0
+regfile_waddr_pipe_MEM_WB/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_0
+updated_pc_pipe_ID_EXE                69.8896      0.0     0.0000    64.0443       0.0000  reg_arstn_en_DATA_W32_10
+updated_pc_pipe_ID_EXE/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_6
+updated_pc_pipe_IF_ID                 69.8896      0.0     0.0000    64.0443       0.0000  reg_arstn_en_DATA_W32_13
+updated_pc_pipe_IF_ID/clk_gate_r_reg
+                                       5.8453      0.0     0.0000     5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W32_0_9
+zero_flag_pipe_EXE_MEM                10.9282      0.0     3.8122     7.1160       0.0000  reg_arstn_en_DATA_W1
+--------------------------------  -----------  -------  ---------  ---------  -----------  -----------------------------------------------
+Total                                                   7302.5737  2525.9373  227919.4922
+
+
+Area of detected synthetic parts
+--------------------------------
+  No DW parts to report!
+
+Estimated area of ungrouped synthetic parts
+-------------------------------------------
+                                      Estimated  Perc. of
+  Module              Implem.  Count       Area cell area
+  ------------------- -------  ----- ---------- ---------
+  DP_OP_18J1_122_7468     str      1   295.5362      0.1%
+  DW01_add            apparch      2   239.9797      0.1%
+  DW02_mult           apparch      1  3401.3508      1.4%
+  DW_cmp              apparch      1   211.8214      0.1%
+  DW_leftsh              astr      1   400.7853      0.2%
+  DW_rightsh             astr      1   391.6362      0.2%
+  ------------------- -------  ----- ---------- ---------
+  DP_OP Subtotal:                  1   295.5362      0.1%
+  Total:                           7  4941.1097      2.1%
+
+Subtotal of datapath(DP_OP) cell area:  295.5362  0.1%  (estimated)
+Total synthetic cell area:              4941.1097  2.1%  (estimated)
+
+1
