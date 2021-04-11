@@ -11,25 +11,25 @@
 module forwarding_unit#(
    parameter integer DATA_W     = 16
    )(
-      input  wire signed [DATA_W-1:0]  WB_ctrl_EXE_MEM,
-      input  wire signed [DATA_W-1:0]  WB_ctrl_MEM_WB,
-      input  wire signed [DATA_W-1:0]  regfile_waddr_EXE_MEM,
-      input  wire signed [DATA_W-1:0]  regfile_waddr_MEM_WB,
-      input  wire signed [DATA_W-1:0]  instruction_ID_EXE_Rs,
-      input  wire signed [DATA_W-1:0]  instruction_ID_EXE_Rt,
-      output wire signed [1:0]         alu_op_1_ctrl,
-      output wire signed [1:0]         alu_op_2_ctrl
+      input  wire signed        WB_ctrl_EXE_MEM_reg_write,
+      input  wire signed        WB_ctrl_MEM_WB_reg_write,
+      input  wire signed [4:0]  regfile_waddr_EXE_MEM,
+      input  wire signed [4:0]  regfile_waddr_MEM_WB,
+      input  wire signed [4:0]  instruction_ID_EXE_Rs,
+      input  wire signed [4:0]  instruction_ID_EXE_Rt,
+      output wire signed [1:0]  alu_op_1_ctrl,
+      output wire signed [1:0]  alu_op_2_ctrl
    );
 
 
    always@(*) begin
 
       // Generating muxcontrol for upper forwarding mux
-      if (WB_ctrl_EXE_MEM == 1'b1
+      if (WB_ctrl_EXE_MEM_reg_write == 1'b1
       && (regfile_waddr_EXE_MEM == instruction_ID_EXE_Rs)) begin 
          alu_op_1_ctrl = 2'b2;
-      end else if (WB_ctrl_MEM_WB == 1'b1 
-      && !(WB_ctrl_EXE_MEM == 1'b1 && (regfile_waddr_EXE_MEM !== instruction_ID_EXE_Rs))
+      end else if (WB_ctrl_MEM_WB_reg_write == 1'b1 
+      && !(WB_ctrl_EXE_MEM_reg_write == 1'b1 && (regfile_waddr_EXE_MEM !== instruction_ID_EXE_Rs))
       && (regfile_waddr_MEM_WB == instruction_ID_EXE_Rs)) begin 
          alu_op_1_ctrl = 2'b1;
       end else begin
@@ -37,11 +37,11 @@ module forwarding_unit#(
       end
 
       // Generating muxcontrol for lower forwarding mux
-      if (WB_ctrl_EXE_MEM == 1'b1
+      if (WB_ctrl_EXE_MEM_reg_write == 1'b1
       && (regfile_waddr_EXE_MEM == instruction_ID_EXE_Rt)) begin
          alu_op_2_ctrl = 2'b2;
-      end else if (WB_ctrl_MEM_WB == 1'b1 
-      && !(WB_ctrl_EXE_MEM == 1'b1 && (regfile_waddr_EXE_MEM !== instruction_ID_EXE_Rt))
+      end else if (WB_ctrl_MEM_WB_reg_write == 1'b1 
+      && !(WB_ctrl_EXE_MEM_reg_write == 1'b1 && (regfile_waddr_EXE_MEM !== instruction_ID_EXE_Rt))
       && (regfile_waddr_MEM_WB == instruction_ID_EXE_Rt)) begin 
          alu_op_2_ctrl = 2'b1;
       end else begin

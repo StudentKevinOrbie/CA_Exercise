@@ -50,7 +50,7 @@ wire [      31:0] regfile_wdata, dram_data,alu_out,
 wire zero_flag_EXE_MEM;
 wire MEM_branch;
 wire MEM_jump;
-wire [31:0] regfile_waddr_MEM_WB;
+wire [4:0] regfile_waddr_MEM_WB;
 wire WB_reg_write;
 wire [31:0] instruction_IF_ID;
 
@@ -258,11 +258,14 @@ assign EXE_alu_op[1] = EXE_ctrl_ID_EXE[2];
 assign EXE_alu_op[0] = EXE_ctrl_ID_EXE[1];
 assign EXE_reg_dst = EXE_ctrl_ID_EXE[0];
 
+wire [1:0] alu_op_1_ctrl;
+wire [1:0] alu_op_2_ctrl;
+
 forwarding_unit#(
       .DATA_W(32)
 )forwarding_unit(
-      .WB_ctrl_EXE_MEM       (WB_ctrl_EXE_MEM          ),
-      .WB_ctrl_MEM_WB        (WB_ctrl_MEM_WB           ),
+      .WB_ctrl_EXE_MEM       (WB_ctrl_EXE_MEM[0]       ), // Select reg_write
+      .WB_ctrl_MEM_WB        (WB_ctrl_MEM_WB[0]        ), // Select reg_write
       .regfile_waddr_EXE_MEM (regfile_waddr_EXE_MEM    ),
       .regfile_waddr_MEM_WB  (regfile_waddr_MEM_WB     ),
       .instruction_ID_EXE_Rs (instruction_ID_EXE[25:21]),
@@ -277,6 +280,7 @@ alu_control alu_ctrl(
    .alu_control    (alu_control     )
 );
 
+// Has now no effect ???
 mux_2 #(
    .DATA_W(32)
 ) alu_operand_mux (
@@ -308,7 +312,7 @@ mux_forwarding#(
 mux_forwarding#(
       .DATA_W(32)
 ) mux_forwarding_2 (
-   .input_a (regfile_data_2_ID_EXE),
+   .input_a (alu_operand_2        ), // Changed this from regfile_data_2_ID_EXE to output of mux controlled by ALU_src
    .input_b (regfile_wdata        ),
    .input_c (alu_out_EXE_MEM      ),
    .select_a(alu_op_2_ctrl        ),
@@ -368,8 +372,8 @@ reg_arstn_en #(.DATA_W(32)) branch_pc_pipe_EXE_MEM(
       .dout  (branch_pc_EXE_MEM)
 );
 
-wire [31:0] regfile_waddr_EXE_MEM;
-reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_EXE_MEM(
+wire [4:0] regfile_waddr_EXE_MEM;
+reg_arstn_en #(.DATA_W(5)) regfile_waddr_pipe_EXE_MEM(
       .clk   (clk          ),
       .arst_n(arst_n       ),
       .din   (regfile_waddr),
@@ -461,7 +465,7 @@ reg_arstn_en #(.DATA_W(32)) alu_out_pipe_MEM_WB(
 );
 
 // Through
-reg_arstn_en #(.DATA_W(32)) regfile_waddr_pipe_MEM_WB(
+reg_arstn_en #(.DATA_W(5)) regfile_waddr_pipe_MEM_WB(
       .clk   (clk            ),
       .arst_n(arst_n         ),
       .din   (regfile_waddr_EXE_MEM),
