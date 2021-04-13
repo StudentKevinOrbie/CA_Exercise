@@ -40,13 +40,13 @@ compile_postsynth: clean
 nc_gui: clean
 	reset; \
 	# =========== Original ===========
-	ncverilog +sv -f files_verilog.f  \
-	+nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION \
-	-linedebug +gui &
-	# =========== NEW =========== --> new window
 	#ncverilog +sv -f files_verilog.f  \
 	#+nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION \
-	#-linedebug +gui +tcl+Session1_WaveDebug1.tcl
+	#-linedebug +gui &
+	# =========== NEW =========== --> new window
+	ncverilog +sv -f files_verilog.f  \
+	+nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION \
+	-linedebug +gui +tcl+Session1_WaveDebug1.tcl
 	
 nc: 	clean
 	reset; \
