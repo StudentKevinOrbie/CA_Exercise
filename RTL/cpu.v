@@ -272,7 +272,7 @@ forwarding_unit#(
       .instruction_ID_EXE_Rt (instruction_ID_EXE[20:16]),
       .alu_op_1_ctrl         (alu_op_1_ctrl            ),
       .alu_op_2_ctrl         (alu_op_2_ctrl            )
-)
+);
 
 alu_control alu_ctrl(
    .function_field (instruction_ID_EXE[5:0]),
@@ -307,7 +307,7 @@ mux_forwarding#(
    .input_c (alu_out_EXE_MEM      ),
    .select_a(alu_op_1_ctrl        ),
    .mux_out (forward1             )
-)
+);
 
 mux_forwarding#(
       .DATA_W(32)
@@ -317,18 +317,18 @@ mux_forwarding#(
    .input_c (alu_out_EXE_MEM      ),
    .select_a(alu_op_2_ctrl        ),
    .mux_out (forward2             )
-)
+);
 
 alu#(
    .DATA_W(32)
 ) alu(
-   .alu_in_0 (forward1),
-   .alu_in_1 (forward2),
-   .alu_ctrl (alu_control   ),
-   .alu_out  (alu_out       ),
+   .alu_in_0 (forward1                ),
+   .alu_in_1 (forward2                ),
+   .alu_ctrl (alu_control             ),
+   .alu_out  (alu_out                 ),
    .shft_amnt(instruction_ID_EXE[10:6]),
-   .zero_flag(zero_flag     ),
-   .overflow (              )
+   .zero_flag(zero_flag               ),
+   .overflow (                        )
 );
 
 // Why are the results forwarded (pipelined) to MEM stage ?
@@ -338,8 +338,8 @@ branch_unit#(
    .updated_pc   (updated_pc_ID_EXE        ),
    .instruction  (instruction_ID_EXE       ),
    .branch_offset(immediate_extended_ID_EXE),
-   .branch_pc    (branch_pc         ),
-   .jump_pc      (jump_pc         )
+   .branch_pc    (branch_pc                ),
+   .jump_pc      (jump_pc                  )
 );
 
 
