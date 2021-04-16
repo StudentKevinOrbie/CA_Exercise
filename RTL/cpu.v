@@ -151,7 +151,8 @@ register_file #(
    .rdata_1  (regfile_data_1    ),
    .rdata_2  (regfile_data_2    )
 );
-
+wire [3:0] MEM_ctrl_ID_EXE;
+wire [31:0] instruction_ID_EXE;
 hazard_detection_unit #(
    .DATA_W(32)
 ) hazard_detection_unit(
@@ -203,7 +204,7 @@ reg_arstn_en #(.DATA_W(32)) immediate_extended_pipe_ID_EXE(
 );
 
 // Through
-wire [31:0] instruction_ID_EXE;
+
 reg_arstn_en #(.DATA_W(32)) instruction_pipe_ID_EXE(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -237,7 +238,7 @@ reg_arstn_en #(.DATA_W(4)) EXE_ctrl_pipe_ID_EXE(
       .dout  (EXE_ctrl_ID_EXE)
 );
 
-wire [3:0] MEM_ctrl_ID_EXE;
+
 assign MEM_ctrl = EXE_ctrl_mux_ctrl ? {mem_write, mem_read, branch, jump} : {1'b0, 1'b0, 1'b0, 1'b0};
 reg_arstn_en #(.DATA_W(4)) MEM_ctrl_pipe_ID_EXE(
       .clk   (clk       ),
@@ -260,6 +261,10 @@ assign EXE_reg_dst = EXE_ctrl_ID_EXE[0];
 
 wire [1:0] alu_op_1_ctrl;
 wire [1:0] alu_op_2_ctrl;
+wire [1:0] WB_ctrl_EXE_MEM;
+wire [1:0] WB_ctrl_MEM_WB;
+wire [31:0] alu_out_EXE_MEM;
+wire [4:0] regfile_waddr_EXE_MEM;
 
 forwarding_unit#(
       .DATA_W(32)
@@ -344,7 +349,7 @@ branch_unit#(
 
 
 // =================================== pipe regs EXE - MEM ===================================
-wire [31:0] alu_out_EXE_MEM;
+
 reg_arstn_en #(.DATA_W(32)) alu_out_pipe_EXE_MEM(
       .clk   (clk       ),
       .arst_n(arst_n    ),
@@ -372,7 +377,7 @@ reg_arstn_en #(.DATA_W(32)) branch_pc_pipe_EXE_MEM(
       .dout  (branch_pc_EXE_MEM)
 );
 
-wire [4:0] regfile_waddr_EXE_MEM;
+
 reg_arstn_en #(.DATA_W(5)) regfile_waddr_pipe_EXE_MEM(
       .clk   (clk          ),
       .arst_n(arst_n       ),
@@ -392,7 +397,7 @@ reg_arstn_en #(.DATA_W(32)) jump_pc_pipe_EXE_MEM(
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Control ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Through
-wire [1:0] WB_ctrl_EXE_MEM;
+
 reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_EXE_MEM(
       .clk   (clk           ),
       .arst_n(arst_n        ),
@@ -475,7 +480,7 @@ reg_arstn_en #(.DATA_W(5)) regfile_waddr_pipe_MEM_WB(
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Control ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Through
-wire [1:0] WB_ctrl_MEM_WB;
+
 reg_arstn_en #(.DATA_W(2)) WB_ctrl_pipe_MEM_WB(
       .clk   (clk            ),
       .arst_n(arst_n         ),
