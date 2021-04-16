@@ -259,8 +259,8 @@ assign EXE_alu_op[1] = EXE_ctrl_ID_EXE[2];
 assign EXE_alu_op[0] = EXE_ctrl_ID_EXE[1];
 assign EXE_reg_dst = EXE_ctrl_ID_EXE[0];
 
-wire [1:0] alu_op_1_ctrl;
-wire [1:0] alu_op_2_ctrl;
+reg [1:0] alu_op_1_ctrl;
+reg [1:0] alu_op_2_ctrl;
 wire [1:0] WB_ctrl_EXE_MEM;
 wire [1:0] WB_ctrl_MEM_WB;
 wire [31:0] alu_out_EXE_MEM;
@@ -269,14 +269,14 @@ wire [4:0] regfile_waddr_EXE_MEM;
 forwarding_unit#(
       .DATA_W(32)
 )forwarding_unit(
-      .WB_ctrl_EXE_MEM       (WB_ctrl_EXE_MEM[0]       ), // Select reg_write
-      .WB_ctrl_MEM_WB        (WB_ctrl_MEM_WB[0]        ), // Select reg_write
-      .regfile_waddr_EXE_MEM (regfile_waddr_EXE_MEM    ),
-      .regfile_waddr_MEM_WB  (regfile_waddr_MEM_WB     ),
-      .instruction_ID_EXE_Rs (instruction_ID_EXE[25:21]),
-      .instruction_ID_EXE_Rt (instruction_ID_EXE[20:16]),
-      .alu_op_1_ctrl         (alu_op_1_ctrl            ),
-      .alu_op_2_ctrl         (alu_op_2_ctrl            )
+      .WB_ctrl_EXE_MEM_reg_write (WB_ctrl_EXE_MEM[0]       ), // Select reg_write
+      .WB_ctrl_MEM_WB_reg_write  (WB_ctrl_MEM_WB[0]        ), // Select reg_write
+      .regfile_waddr_EXE_MEM     (regfile_waddr_EXE_MEM    ),
+      .regfile_waddr_MEM_WB      (regfile_waddr_MEM_WB     ),
+      .instruction_ID_EXE_Rs     (instruction_ID_EXE[25:21]),
+      .instruction_ID_EXE_Rt     (instruction_ID_EXE[20:16]),
+      .alu_op_1_ctrl             (alu_op_1_ctrl            ),
+      .alu_op_2_ctrl             (alu_op_2_ctrl            )
 );
 
 alu_control alu_ctrl(
