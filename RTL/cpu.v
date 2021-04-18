@@ -300,7 +300,7 @@ mux_2 #(
 ) regfile_dest_mux (
    .input_a (instruction_ID_EXE[15:11]),
    .input_b (instruction_ID_EXE[20:16]),
-   .select_a(alu_op_1_ctrl            ),
+   .select_a(EXE_reg_dst              ), // Changed this to reg_dst from alu_op_1_ctrl
    .mux_out (regfile_waddr            )
 );
 
