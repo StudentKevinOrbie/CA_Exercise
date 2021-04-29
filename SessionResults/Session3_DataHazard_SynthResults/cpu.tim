@@ -1,0 +1,109 @@
+Warning: Design 'cpu' has '3' unresolved references. For more detailed information, use the "link" command. (UID-341)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : cpu
+Version: N-2017.09-SP3
+Date   : Thu Apr 29 08:51:58 2021
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: tt1p05v25c   Library: saed32sram_tt1p05v25c
+Wire Load Model Mode: enclosed
+
+  Startpoint: instruction_pipe_ID_EXE/r_reg_1_
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: zero_flag_pipe_EXE_MEM/r_reg_0_
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  reg_arstn_en_DATA_W32_6
+                     ForQA                 saed32sram_tt1p05v25c
+  cpu                280000                saed32sram_tt1p05v25c
+  alu_control        ForQA                 saed32sram_tt1p05v25c
+  alu_DATA_W32       8000                  saed32sram_tt1p05v25c
+  reg_arstn_en_DATA_W1
+                     ForQA                 saed32sram_tt1p05v25c
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  instruction_pipe_ID_EXE/r_reg_1_/CLK (DFFARX1_RVT)      0.00       0.00 r
+  instruction_pipe_ID_EXE/r_reg_1_/Q (DFFARX1_RVT)        0.17       0.17 f
+  instruction_pipe_ID_EXE/dout[1] (reg_arstn_en_DATA_W32_6)
+                                                          0.00       0.17 f
+  alu_ctrl/function_field[1] (alu_control)                0.00       0.17 f
+  alu_ctrl/U10/SO (HADDX1_RVT)                            1.96       2.12 r
+  alu_ctrl/U11/Y (OA22X1_RVT)                             0.05       2.17 r
+  alu_ctrl/U15/Y (OAI22X1_RVT)                            0.10       2.27 f
+  alu_ctrl/alu_control[0] (alu_control)                   0.00       2.27 f
+  alu/alu_ctrl[0] (alu_DATA_W32)                          0.00       2.27 f
+  alu/U117/Y (INVX0_RVT)                                  0.92       3.19 r
+  alu/U639/Y (NOR4X1_RVT)                                 0.64       3.84 f
+  alu/DP_OP_18J3_122_7468_U33/CO (FADDX1_RVT)             1.00       4.84 f
+  alu/DP_OP_18J3_122_7468_U32/CO (FADDX1_RVT)             0.20       5.04 f
+  alu/DP_OP_18J3_122_7468_U31/CO (FADDX1_RVT)             0.20       5.24 f
+  alu/DP_OP_18J3_122_7468_U30/CO (FADDX1_RVT)             0.20       5.44 f
+  alu/DP_OP_18J3_122_7468_U29/CO (FADDX1_RVT)             0.20       5.64 f
+  alu/DP_OP_18J3_122_7468_U28/CO (FADDX1_RVT)             0.20       5.84 f
+  alu/DP_OP_18J3_122_7468_U27/CO (FADDX1_RVT)             0.20       6.04 f
+  alu/DP_OP_18J3_122_7468_U26/CO (FADDX1_RVT)             0.20       6.24 f
+  alu/DP_OP_18J3_122_7468_U25/CO (FADDX1_RVT)             0.20       6.44 f
+  alu/DP_OP_18J3_122_7468_U24/CO (FADDX1_RVT)             0.20       6.64 f
+  alu/DP_OP_18J3_122_7468_U23/CO (FADDX1_RVT)             0.20       6.84 f
+  alu/DP_OP_18J3_122_7468_U22/CO (FADDX1_RVT)             0.20       7.04 f
+  alu/DP_OP_18J3_122_7468_U21/CO (FADDX1_RVT)             0.20       7.24 f
+  alu/DP_OP_18J3_122_7468_U20/CO (FADDX1_RVT)             0.20       7.44 f
+  alu/DP_OP_18J3_122_7468_U19/CO (FADDX1_RVT)             0.20       7.64 f
+  alu/DP_OP_18J3_122_7468_U18/CO (FADDX1_RVT)             0.20       7.84 f
+  alu/DP_OP_18J3_122_7468_U17/CO (FADDX1_RVT)             0.20       8.04 f
+  alu/DP_OP_18J3_122_7468_U16/CO (FADDX1_RVT)             0.20       8.24 f
+  alu/DP_OP_18J3_122_7468_U15/CO (FADDX1_RVT)             0.20       8.44 f
+  alu/DP_OP_18J3_122_7468_U14/CO (FADDX1_RVT)             0.20       8.63 f
+  alu/DP_OP_18J3_122_7468_U13/CO (FADDX1_RVT)             0.20       8.83 f
+  alu/DP_OP_18J3_122_7468_U12/CO (FADDX1_RVT)             0.20       9.03 f
+  alu/DP_OP_18J3_122_7468_U11/CO (FADDX1_RVT)             0.20       9.23 f
+  alu/DP_OP_18J3_122_7468_U10/CO (FADDX1_RVT)             0.20       9.43 f
+  alu/DP_OP_18J3_122_7468_U9/CO (FADDX1_RVT)              0.20       9.63 f
+  alu/DP_OP_18J3_122_7468_U8/CO (FADDX1_RVT)              0.20       9.83 f
+  alu/DP_OP_18J3_122_7468_U7/CO (FADDX1_RVT)              0.20      10.03 f
+  alu/DP_OP_18J3_122_7468_U6/CO (FADDX1_RVT)              0.20      10.23 f
+  alu/DP_OP_18J3_122_7468_U5/CO (FADDX1_RVT)              0.20      10.43 f
+  alu/DP_OP_18J3_122_7468_U4/CO (FADDX1_RVT)              0.20      10.63 f
+  alu/DP_OP_18J3_122_7468_U3/CO (FADDX1_RVT)              0.19      10.82 f
+  alu/U1089/Y (XOR2X1_RVT)                                0.15      10.97 f
+  alu/U3/Y (NAND2X0_RVT)                                  0.07      11.04 r
+  alu/U1092/Y (AND4X1_RVT)                                0.06      11.10 r
+  alu/U1093/Y (NAND2X0_RVT)                               0.07      11.18 f
+  alu/U1657/Y (NOR3X0_RVT)                                0.73      11.90 r
+  alu/U1660/Y (NAND4X0_RVT)                               0.07      11.97 f
+  alu/U1661/Y (NOR3X0_RVT)                                0.12      12.09 r
+  alu/zero_flag (alu_DATA_W32)                            0.00      12.09 r
+  zero_flag_pipe_EXE_MEM/din[0] (reg_arstn_en_DATA_W1)
+                                                          0.00      12.09 r
+  zero_flag_pipe_EXE_MEM/U2/Y (AO22X1_RVT)                0.15      12.25 r
+  zero_flag_pipe_EXE_MEM/r_reg_0_/D (DFFARX1_RVT)         0.01      12.26 r
+  data arrival time                                                 12.26
+
+  clock clk (rise edge)                                 100.00     100.00
+  clock network delay (ideal)                             0.00     100.00
+  clock uncertainty                                      -0.10      99.90
+  zero_flag_pipe_EXE_MEM/r_reg_0_/CLK (DFFARX1_RVT)       0.00      99.90 r
+  library setup time                                     -0.02      99.88
+  data required time                                                99.88
+  --------------------------------------------------------------------------
+  data required time                                                99.88
+  data arrival time                                                -12.26
+  --------------------------------------------------------------------------
+  slack (MET)                                                       87.62
+
+
+1
